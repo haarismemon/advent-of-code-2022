@@ -1,10 +1,18 @@
-def my_move_points(my_move):
-    points = {
-        "R": 1,
-        "P": 2,
-        "S": 3
-    }
-    return points[my_move]
+points = {
+    "A": 1,
+    "B": 2,
+    "C": 3
+}
+to_win = {
+    "A": "B",
+    "B": "C",
+    "C": "A"
+}
+to_lose = {
+    "A": "C",
+    "B": "A",
+    "C": "B"
+}
 
 
 def main():
@@ -19,38 +27,17 @@ def main():
 
             score = 0
 
-            # rock
-            if elf_play == 'A':
-                if my_outcome == 'X':
-                    score = my_move_points('S') + 0
-                elif my_outcome == 'Y':
-                    score = my_move_points('R') + 3
-                elif my_outcome == 'Z':
-                    score = my_move_points('P') + 6
-                else:
-                    score = 0
-            # paper
-            elif elf_play == 'B':
-                if my_outcome == 'X':
-                    score = my_move_points('R') + 0
-                elif my_outcome == 'Y':
-                    score = my_move_points('P') + 3
-                elif my_outcome == 'Z':
-                    score = my_move_points('S') + 6
-                else:
-                    score = 0
-            # scissors
-            elif elf_play == 'C':
-                if my_outcome == 'X':
-                    score = my_move_points('P') + 0
-                elif my_outcome == 'Y':
-                    score = my_move_points('S') + 3
-                elif my_outcome == 'Z':
-                    score = my_move_points('R') + 6
-                else:
-                    score = 0
-            else:
-                score = 0
+            # draw
+            if my_outcome == 'Y':
+                score += points[elf_play] + 3
+            # win
+            elif my_outcome == "Z":
+                my_move = to_win[elf_play]
+                score += points[my_move] + 6
+            # lose
+            elif my_outcome == "X":
+                my_move = to_lose[elf_play]
+                score += points[my_move]
 
             total_score += score
             print(elf_play, my_outcome, '=', score)

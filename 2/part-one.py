@@ -1,10 +1,18 @@
-def my_move_points(my_move):
-    points = {
-        "X": 1,
-        "Y": 2,
-        "Z": 3
-    }
-    return points[my_move]
+points = {
+    "X": 1,
+    "Y": 2,
+    "Z": 3
+}
+mappings = {
+    'X': 'A',
+    'Y': 'B',
+    'Z': 'C'
+}
+to_win = {
+    "A": "B",
+    "B": "C",
+    "C": "A"
+}
 
 
 def main():
@@ -17,37 +25,14 @@ def main():
             elf_play = game_round[0]
             my_play = game_round[1]
 
-            score = 0
+            score = points[my_play]
 
-            if elf_play == 'A':
-                if my_play == 'X':
-                    score = my_move_points('X') + 3
-                elif my_play == 'Y':
-                    score = my_move_points('Y') + 6
-                elif my_play == 'Z':
-                    score = my_move_points('Z') + 0
-                else:
-                    score = 0
-            elif elf_play == 'B':
-                if my_play == 'X':
-                    score = my_move_points('X') + 0
-                elif my_play == 'Y':
-                    score = my_move_points('Y') + 3
-                elif my_play == 'Z':
-                    score = my_move_points('Z') + 6
-                else:
-                    score = 0
-            elif elf_play == 'C':
-                if my_play == 'X':
-                    score = my_move_points('X') + 6
-                elif my_play == 'Y':
-                    score = my_move_points('Y') + 0
-                elif my_play == 'Z':
-                    score = my_move_points('Z') + 3
-                else:
-                    score = 0
-            else:
-                score = 0
+            # draw
+            if elf_play == mappings[my_play]:
+                score += 3
+            # win
+            elif (elf_play, mappings[my_play]) in to_win.items():
+                score += 6
 
             total_score += score
             print(elf_play, my_play, '=', score)
