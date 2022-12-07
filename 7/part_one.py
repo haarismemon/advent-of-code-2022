@@ -8,12 +8,6 @@ class Directory:
         self.parent_directory = parent
         self.child_directories = {}
 
-    def add_new_file(self, file_size):
-        self.contents_size += file_size
-
-        if self.parent_directory:
-            self.parent_directory.add_new_file(file_size)
-
 
 def main(file):
     with open(file) as input_file:
@@ -21,16 +15,15 @@ def main(file):
         root_directory = Directory(None)
 
         read_commands(input_file, root_directory, all_directories)
+        calculate_directory_sizes(all_directories)
 
         threshold = 100000
-
         result = sum(map(lambda d: d.contents_size if d.contents_size < threshold else 0, all_directories))
-
         print(f'Sum of directories above {threshold}: {result}')
 
 
 def read_commands(input_file, root_directory, all_directories):
-    current_directory = None
+    current_directory: Directory = None
     printing_contents = False
 
     for line in input_file:
@@ -66,7 +59,14 @@ def read_commands(input_file, root_directory, all_directories):
                 current_directory.child_directories[directory_name] = new_directory
             elif re.match(file_pattern, command):
                 file_size = int(re.search(file_pattern, command).group(1))
-                current_directory.add_new_file(file_size)
+                current_directory.contents_size += file_size
+
+
+def calculate_directory_sizes(directories):
+    directories.reverse()
+    for d in directories:
+        if d.parent_directory:
+            d.parent_directory.contents_size += d.contents_size
 
 
 if __name__ == '__main__':

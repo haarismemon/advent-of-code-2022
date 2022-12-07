@@ -7,6 +7,7 @@ def main(file):
         root_directory = part_one.Directory(None)
 
         part_one.read_commands(input_file, root_directory, all_directories)
+        part_one.calculate_directory_sizes(all_directories)
 
         directory_sizes = sorted(list(map(lambda directory: directory.contents_size, all_directories)))
         print(f'Size of directory to delete:', clear_up_space(directory_sizes, root_directory))
