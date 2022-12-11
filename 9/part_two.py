@@ -7,36 +7,19 @@ class Knot:
         self.name: str = name
         self.x = x
         self.y = y
-        # self.next_knot = None
-        # self.previous_knot = previous_knot
-
-
-move_directions = {
-    "U": (0, 1),
-    "D": (0, -1),
-    "R": (1, 0),
-    "L": (-1, 0)
-}
 
 
 class Rope:
 
     def __init__(self):
         self.knots = []
-        self.diagonal_move = {}
 
         for i in range(10):
-            # if i == 0:
-            #     previous_knot = None
-            # else:
-            #     previous_knot = self.knots[i - 1]
-
             knot = Knot(str(i), 0, 0)
             self.knots.append(knot)
-            self.diagonal_move[i] = []
 
-        # puts head at the start of the rope list
-        self.knots.reverse()
+
+move_directions = {"U": (0, 1), "D": (0, -1), "R": (1, 0), "L": (-1, 0)}
 
 
 def main(file):
@@ -56,16 +39,13 @@ def main(file):
             make_moves(rope, direction, int(occurrence), visited_positions)
 
         print("== Visited Positions  ==")
-        print_visited_positions(visited_positions, 6, 5)
+        print_visited_positions(visited_positions, 6)
 
         print('Total visited positions:', len(visited_positions))
 
 
 def make_moves(rope: Rope, direction, occurrence: int, visited_positions):
-
     for n in range(occurrence):
-
-        # current_knot = rope.knots[i]
 
         apply_move(rope.knots[0], direction)
 
@@ -73,27 +53,12 @@ def make_moves(rope: Rope, direction, occurrence: int, visited_positions):
             previous_knot = rope.knots[i - 1]
             next_knot = rope.knots[i]
 
-            # print(previous_knot.name, next_knot.name)
-
             x_distance = previous_knot.x - next_knot.x
             y_distance = previous_knot.y - next_knot.y
 
-            if x_distance == 0 and y_distance == 0:
-                continue
-
-            if abs(x_distance) == 1 and abs(y_distance) == 1:
-                # save the position of the head when moved diagonally to use to update tail
-                rope.diagonal_move[i].clear()
-                rope.diagonal_move[i - 1] = [Knot(previous_knot.name, previous_knot.x, previous_knot.y)]
-            else:
-                if len(rope.diagonal_move[i - 1]) > 0:
-                    # print(f'diagonal knot {i}')
-                    move = rope.diagonal_move[i].pop()
-                    next_knot = Knot(move.name, move.x, move.y)
-                    rope.knots[i] = next_knot
-                else:
-                    # print(f'apply move knot {i}')
-                    apply_move(next_knot, direction)
+            if (abs(x_distance) > 1) or (abs(y_distance) > 1):
+                next_knot.x += np.sign(x_distance)
+                next_knot.y += np.sign(y_distance)
 
             if i == len(rope.knots) - 1:
                 visited_positions.add((next_knot.x, next_knot.y))
@@ -107,14 +72,15 @@ def print_grid(rope: Rope, grid_size):
     for y in range(grid_size):
         row = ""
         for x in range(grid_size):
-
             knots = rope.knots
-
             knot_printed = False
 
             for knot in knots:
                 if knot.x == x and knot.y == y:
-                    row += knot.name + " "
+                    if knot.name == "0":
+                        row += "H "
+                    else:
+                        row += knot.name + " "
                     knot_printed = True
                     break
 
@@ -129,19 +95,17 @@ def print_grid(rope: Rope, grid_size):
     print(grid)
 
 
-def print_visited_positions(visited_positions, i, j):
+def print_visited_positions(visited_positions, grid_size):
     grid = ""
 
-    for y in range(j):
+    for y in range(grid_size):
         row = ""
-        for x in range(i):
+        for x in range(grid_size):
 
             if (x, y) in visited_positions:
                 row += "# "
-
             elif x == 0 and y == 0:
                 row += "s "
-
             else:
                 row += "- "
 
